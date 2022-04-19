@@ -1,3 +1,5 @@
 # js-masterclass
 
-Repo for Javascript Masterclass course (branas.io)
+This project simulates a database.
+
+Repo for Javascript Masterclass course [https://app.branas.io/public/products](branas.io)

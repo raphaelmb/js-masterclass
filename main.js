@@ -68,9 +68,8 @@ const database = {
   },
 
   delete(statement) {
-    const regexp = /delete from (.+)(?: where (.+))?/;
+    const regexp = /delete from ([a-z]+)(?: where (.+))?/;
     const parsedStatement = statement.match(regexp);
-    console.log(parsedStatement);
     let [, tableName, whereClause] = parsedStatement;
 
     if (whereClause) {
@@ -124,9 +123,7 @@ try {
   database.execute("select name, age from author");
   console.log(
     JSON.stringify(
-      database.execute(
-        "create table author (id number, name string, age number, city string, state string, country string)"
-      ),
+      database.execute("select name, age from author"),
       undefined,
       " "
     )
