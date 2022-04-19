@@ -2,4 +2,4 @@
 
 This project simulates a database.
 
-Repo for Javascript Masterclass course [https://app.branas.io/public/products](branas.io)
+Repo for Javascript Masterclass course [branas.io](https://app.branas.io/public/products)
