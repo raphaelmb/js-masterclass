@@ -1,17 +1,21 @@
-const DatabaseError = function (statement, message) {
-  this.statement = statement;
-  this.message = message;
-};
+class DatabaseError {
+  constructor(statement, message) {
+    this.statement = statement;
+    this.message = message;
+  }
+}
 
-const Parser = function () {
-  const commands = new Map();
-  commands.set("createTable", /create table (\w+) \((.+)\)/);
-  commands.set("insert", /insert into (\w+) \((.+)\) values \((.+)\)/);
-  commands.set("select", /select (.+) from (\w+)(?: where (.+))?/);
-  commands.set("delete", /delete from ([a-z]+)(?: where (.+))?/);
+class Parser {
+  constructor() {
+    this.commands = new Map();
+    this.commands.set("createTable", /create table (\w+) \((.+)\)/);
+    this.commands.set("insert", /insert into (\w+) \((.+)\) values \((.+)\)/);
+    this.commands.set("select", /select (.+) from (\w+)(?: where (.+))?/);
+    this.commands.set("delete", /delete from ([a-z]+)(?: where (.+))?/);
+  }
 
-  this.parse = function (statement) {
-    for (let [command, regexp] of commands) {
+  parse(statement) {
+    for (let [command, regexp] of this.commands) {
       const parsedStatement = statement.match(regexp);
       if (parsedStatement) {
         return {
@@ -20,13 +24,14 @@ const Parser = function () {
         };
       }
     }
-  };
-};
+  }
+}
 
-const database = {
-  tables: {},
-
-  parser: new Parser(),
+class Database {
+  constructor() {
+    this.tables = {};
+    this.parser = new Parser();
+  }
 
   createTable(parsedStatement) {
     let [, tableName, columns] = parsedStatement;
@@ -39,7 +44,7 @@ const database = {
       const [name, type] = column.trim().split(" ");
       this.tables[tableName].columns[name] = type;
     }
-  },
+  }
 
   insert(parsedStatement) {
     let [, tableName, columns, values] = parsedStatement;
@@ -50,7 +55,7 @@ const database = {
       row[column] = values[index];
     });
     this.tables[tableName].data.push(row);
-  },
+  }
 
   select(parsedStatement) {
     let [, columns, tableName, whereClause] = parsedStatement;
@@ -72,7 +77,7 @@ const database = {
     });
 
     return rows;
-  },
+  }
 
   delete(parsedStatement) {
     let [, tableName, whereClause] = parsedStatement;
@@ -86,7 +91,7 @@ const database = {
     } else {
       this.tables[tableName].data = [];
     }
-  },
+  }
 
   execute(statement) {
     const result = this.parser.parse(statement);
@@ -95,10 +100,11 @@ const database = {
     }
     const message = `Syntax error: "${statement}"`;
     throw new DatabaseError(statement, message);
-  },
-};
+  }
+}
 
 try {
+  const database = new Database();
   database.execute(
     "create table author (id number, name string, age number, city string, state string, country string)"
   );
